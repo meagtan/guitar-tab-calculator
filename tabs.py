@@ -39,7 +39,7 @@ def tabs(chord, ignoreoctaves = False):
         yield (None,) * 6
     else:
         for i in xrange(6):
-            if strings[i] < chord[0] < strings[i] + maxfret: # TODO modify for ignoreoctaves, perhaps by adding 12 iteratively
+            if strings[i] <= chord[0] < strings[i] + maxfret: # TODO modify for ignoreoctaves, perhaps by adding 12 iteratively
                 for tab in tabs(chord[1:]):
                     if tab[i] is None: # ith string previously unoccupied
                         tab = tab[:i] + (chord[0] - strings[i],) + tab[i+1:]
