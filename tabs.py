@@ -38,7 +38,7 @@ def tabs(chord, ignoreoctaves = False):
         yield (None,) * 6
     else:
         for i in xrange(6):
-            if strings[i] < chord[0] < strings[i] + maxfret: # TODO modify for ignoreoctaves
+            if strings[i] < chord[0] < strings[i] + maxfret: # TODO modify for ignoreoctaves, perhaps by adding 12 iteratively
                 for tab in tabs(chord[1:]):
                     if tab[i] is None: # ith string previously unoccupied
                         tab = tab[:i] + (chord[0] - strings[i],) + tab[i+1:]
@@ -46,7 +46,12 @@ def tabs(chord, ignoreoctaves = False):
                             yield tab
 
 def distance(tab1, tab2):
-    'Measure the effort spent in moving from tab1 to tab2.'
+    'Measure the effort spent in moving from tab1 to tab2 using an edit distance.'
+    # The following should count as unit moves:
+    # - Holding or releasing a string (conversion from or to 0/None)
+    # - Moving a string one semitone up or down
+    # - Transposing two adjacent strings
+    # Perhaps measure edit distance on the True elements of the tabs
     pass
 
 def viable(tab):
