@@ -52,7 +52,8 @@ def distance(tab1, tab2):
     # - Holding or releasing a string (conversion from or to 0/None)
     # - Moving a string one semitone up or down
     # - Transposing two adjacent strings
-    # Perhaps measure edit distance on the True elements of the tabs
+    # Perhaps measure edit distance on the True elements of the tabs, something like Damerau-Levenshtein distance
+    # Memoize starting from the 0th index and up to the ith, considering the distance swapping the ith and (i+1)th strings
     pass
 
 def viable(tab):
