@@ -1,17 +1,34 @@
-# Using A* search to generate an optimal tab configuration from a sequence of chords
+# Using best-first search to generate an optimal tab configuration from a sequence of chords
 # Chords are represented as sorted tuples of notes, and notes are represented as integers
 #  measured from the low E string and counted along the chromatic scale.
 # Tabs are tuples of 6 elements, either None or a nonnegative number measured wrt the corresponding string.
+
+import heapq as hp
 
 strings = (0, 5, 10, 15, 19, 24) # E, A, D, G, B, E
 spread  = 5 # maximum distance between fingers
 maxfret = 19
 
 # may also return list of configurations, sorted by optimality and cut off after a certain number
-def config(chords):
+def config(chords, ignoreoctaves = False):
     'Traverse tab configurations starting from the first chord, returning the optimal one.'
     # The neighbors of an incomplete configuration are configurations with the next chord complete 
-    pass
+    openset = [(0, ())]
+    dists   = {() : 0}
+    length  = len(chords)
+    
+    while openset:
+        current = hp.heappop(openset)[1]
+        if len(current) == length: # found first complete configuration
+            return list(current)
+        for tab in tabs(chord, ignoreoctaves):
+            # is it necessary to calculate the new distance, as the new item will never be traversed before?
+            newdist = dists[current] + distance(current[-1], tab)
+            newitem = current + (tab,)
+            if newitem not in dists or newdist < dists[newitem]:
+                dists[newitem] = newdist
+                hp.heappush(openset, (newdist, newitem))
+    return None
 
 # TODO make this iterative
 def tabs(chord, ignoreoctaves = False):
