@@ -19,9 +19,10 @@ def config(chords, ignoreoctaves = False):
     
     while openset:
         current = hp.heappop(openset)[1]
-        if len(current) == length: # found first complete configuration
+        i = len(current)
+        if i == length: # found first complete configuration
             return list(current)
-        for tab in tabs(chord, ignoreoctaves):
+        for tab in tabs(chords[i], ignoreoctaves):
             # is it necessary to calculate the new distance, as the new item will never be traversed before?
             newdist = dists[current] + distance(current[-1], tab)
             newitem = current + (tab,)
