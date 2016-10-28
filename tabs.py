@@ -58,4 +58,4 @@ def distance(tab1, tab2):
 def viable(tab):
     'Check the spread and number of fingers of tab and return if they are viable.'
     frets = filter(None, tab) # extract fingers not None or 0
-    return max(frets) - min(frets) <= spread and (len(frets) <= 4 or len(frets) == 5 and tab[0])
+    return not frets or max(frets) - min(frets) <= spread and (len(frets) <= 4 or len(frets) == 5 and tab[0])
