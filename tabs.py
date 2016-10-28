@@ -24,7 +24,7 @@ def config(chords, ignoreoctaves = False):
             return list(current)
         for tab in tabs(chords[i], ignoreoctaves):
             # is it necessary to calculate the new distance, as the new item will never be traversed before?
-            newdist = dists[current] + distance(current[-1], tab)
+            newdist = dists[current] + (distance(current[-1], tab) if current else sum(filter(None, tab))) # hack
             newitem = current + (tab,)
             if newitem not in dists or newdist < dists[newitem]:
                 dists[newitem] = newdist
