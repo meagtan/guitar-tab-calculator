@@ -68,7 +68,8 @@ def distance(tab1, tab2):
     # - Transposing two adjacent strings
     # Perhaps measure edit distance on the True elements of the tabs, something like Damerau-Levenshtein distance
     # Memoize starting from the 0th index and up to the ith, considering the distance swapping the ith and (i+1)th strings
-    pass
+    # TODO change this and heur later to suit this measure
+    return sum(map(lambda i, j: ((i if i else 0) - (j if j else 0)) ** 2, tab1, tab2))
 
 def heur(tab):
     'Estimate the cost of tab.'
