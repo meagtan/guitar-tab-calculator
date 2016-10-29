@@ -12,23 +12,37 @@ maxfret = 19
 # may also return list of configurations, sorted by optimality and cut off after a certain number
 def config(chords, ignoreoctaves = False):
     'Traverse tab configurations starting from the first chord, returning the optimal one.'
-    # The neighbors of an incomplete configuration are configurations with the next chord complete 
-    openset = [(0, ())]
-    dists   = {() : 0}
+    # The items traversed are pairs (i, t) where t is a tab of chords[i]
+    openset = []
+    dists   = {}
+    preds   = {}
     length  = len(chords)
     
+    for tab in tabs(chords[0], ignoreoctaves):
+        hp.heappush(openset, (heur(tab), (0, tab)))
+        dists[0, tab] = 0
+    
     while openset:
-        current = hp.heappop(openset)[1]
-        i = len(current)
-        if i == length: # found first complete configuration
-            return list(current)
-        for tab in tabs(chords[i], ignoreoctaves):
+        i, t = hp.heappop(openset)[1]
+        
+        # found first complete configuration
+        if i == length - 1: 
+            res = []
+            while (i, t) in preds:
+                res.append(t)
+                i, t = preds[i, t]
+            res.append(t)
+            res.reverse()
+            return res
+        
+        for tab in tabs(chords[i+1], ignoreoctaves):
             # is it necessary to calculate the new distance, as the new item will never be traversed before?
-            newdist = dists[current] + (distance(current[-1], tab) if current else sum(filter(None, tab))) # hack
-            newitem = current + (tab,)
+            newdist = dists[i, t] + distance(t, tab)
+            newitem = (i + 1, tab)
             if newitem not in dists or newdist < dists[newitem]:
                 dists[newitem] = newdist
-                hp.heappush(openset, (newdist, newitem))
+                preds[newitem] = i, t
+                hp.heappush(openset, (newdist + heur(tab), newitem))
     return None
 
 # TODO make this iterative
@@ -55,6 +69,10 @@ def distance(tab1, tab2):
     # Perhaps measure edit distance on the True elements of the tabs, something like Damerau-Levenshtein distance
     # Memoize starting from the 0th index and up to the ith, considering the distance swapping the ith and (i+1)th strings
     pass
+
+def heur(tab):
+    'Estimate the cost of tab.'
+    return sum(map(lambda x: x ** 2, filter(None, tab)))
 
 def viable(tab):
     'Check the spread and number of fingers of tab and return if they are viable.'
