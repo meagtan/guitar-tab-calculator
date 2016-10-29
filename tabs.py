@@ -1,3 +1,4 @@
+
 # Using best-first search to generate an optimal tab configuration from a sequence of chords
 # Chords are represented as sorted tuples of notes, and notes are represented as integers
 #  measured from the low E string and counted along the chromatic scale.
@@ -69,11 +70,11 @@ def distance(tab1, tab2):
     # Perhaps measure edit distance on the True elements of the tabs, something like Damerau-Levenshtein distance
     # Memoize starting from the 0th index and up to the ith, considering the distance swapping the ith and (i+1)th strings
     # TODO change this and heur later to suit this measure
-    return sum(map(lambda i, j: abs((i if i else 0) - (j if j else 0)), tab1, tab2))
+    return sum(map(lambda i, j: ((i if i else 0) - (j if j else 0)) ** 2, tab1, tab2))
 
 def heur(tab):
     'Estimate the cost of tab.'
-    return sum(filter(None, tab))
+    return sum(map(lambda x: x ** 2, filter(None, tab)))
 
 def viable(tab):
     'Check the spread and number of fingers of tab and return if they are viable.'
